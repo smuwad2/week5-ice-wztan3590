@@ -29,24 +29,19 @@
 
             function showHint() {
                 var sug = document.getElementById("suggestions");
-                const url = "/workspaces/week5-ice-wztan3590/index.js";
+                const url = "/suggest";
                 axios.get(url, { 
-                    query : names[0]
+                    params: {
+                        "query" : document.getElementById("nameInput").value
+                    }
                 })
 
                 .then(response =>  {
-                    console.log(response.data)
-                    var names = response.data.names
-                    for (i=0, i < names.length, i++)
-                    if (query == names[i][0]) {
-                        sug += names[i]
-                    }
-                    document.getElementById("axios").innerText = sug; // names output
+                    document.getElementById("suggestions").innerText = response.data
                 })
-                // .catch(error => {
-                //     console.log(error.message)
-                //     document.getElementById("axios").innerText = error.message; // error message output
-                // });  
+                .catch(error => {
+                    console.log(error);
+                });  
             }
         </script>
 
