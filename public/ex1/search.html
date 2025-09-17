@@ -28,14 +28,12 @@
             input.addEventListener("keyup", showHint);
 
             function showHint() {
-                var sug = document.getElementById("suggestions");
                 const url = "/suggest";
                 axios.get(url, { 
                     params: {
                         "query" : document.getElementById("nameInput").value
                     }
                 })
-
                 .then(response =>  {
                     document.getElementById("suggestions").innerText = response.data
                 })
