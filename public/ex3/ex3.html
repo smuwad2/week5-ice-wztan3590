@@ -99,20 +99,34 @@
             const cataVal = document.getElementById("selectCategory").value;
             const itemsList = document.getElementById("itemsList").value;
             const url = "/items";
-
-            axios.get(url, { 
-                params: {
-                    "items" : itemsList,
-                    "category" : cataVal
-                }
-            })
-            .then(response =>  {
-                console.log(response.data);
-                showItems(response.data);
-            })
-            .catch(error => {
-                console.log(error);
-            }); 
+            if (cataVal != "all") {
+                axios.get(url, { 
+                    params: {
+                        "items" : itemsList,
+                        "category" : cataVal
+                    }
+                })
+                .then(response =>  {
+                    console.log(response.data);
+                    showItems(response.data);
+                })
+                .catch(error => {
+                    console.log(error);
+                }); 
+            } else {
+                axios.get(url, { 
+                    params: {
+                        "items" : itemsList
+                    }
+                })
+                .then(response =>  {
+                    console.log(response.data);
+                    showItems(response.data);
+                })
+                .catch(error => {
+                    console.log(error);
+                }); 
+            }
         }
 
         function showItems(items) {
