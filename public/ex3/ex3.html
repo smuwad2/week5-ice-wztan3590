@@ -123,8 +123,6 @@
 
             const itemsList = document.getElementById("itemsList");
 
-            // remove previous selections
-
             // Goal: 
             // <div class="container-fluid">
                 // <div class="row justify-content-center"> 
@@ -143,6 +141,9 @@
 
             const divRow = document.createElement("div");
             divRow.className = "row justify-content-center";
+
+            // remove previous selections
+            itemsList.innerHTML = "";
             
             // "items" : [{"name":"Apple","category":"Fruit","quantity":10,"price":0.5}, ...]
             for (i=0; i<items.length; i++) {
@@ -158,6 +159,9 @@
                 const card = document.createElement("div");
                 card.className = "card h-100 text-center shadow-sm";
 
+                const title = document.createElement("h5");
+                title.className = "card-title";
+
                 const cardBody = document.createElement("div");
                 cardBody.className = "card-body";
 
@@ -169,21 +173,20 @@
                     if (tableHeadings[j] == 'name') {
                         const name = document.createElement("h5");
                         name.className = "card-title";
-                        divBox.textContent = tableVal[j];
+                        name.textContent = tableVal[j];
+                        cardBody.appendChild(name);
                     }
                     if (tableHeadings[j] == 'price') {
                         const price = document.createElement("p");
                         price.className = "card-text";
-                        divBox.innerText = tableVal[j];
                         price.textContent = "Price: $" + tableVal[j];
+                        cardBody.appendChild(price);
                     }
                 }
-                cardBody.appendChild(name);
-                cardBody.appendChild(price);
                 card.appendChild(cardBody);
                 col.appendChild(card);
+                divRow.appendChild(col);
             }
-            divRow.appendChild(col);
 
             divContainer.appendChild(divRow);
             itemsList.appendChild(divContainer);
