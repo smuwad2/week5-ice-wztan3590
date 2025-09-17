@@ -64,8 +64,9 @@
                 tableElem.className = "table";
                 const tBodyElem = document.createElement("tbody");
                 const trElem = document.createElement("tr");
+                // {"type":"products", "records": [{"name":"iPhone","price":2049}, ...]
                 const tableHeadings = Object.keys(dataObj["records"][0]) 
-                // important: call using Object.keys() or Object.
+                // important: call using Object.keys()
 
                 for (const headingVal of tableHeadings) { // ['name', 'price']
                     const thElem = document.createElement("th");

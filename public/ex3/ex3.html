@@ -19,7 +19,7 @@
             </div>
             <div class="col-md-9">
                 <select class="form-select" onchange="getItems()" id="selectCategory">
-                    <option value="0">To select</option>
+                    <option value='0' select disabled selected>To select</option>
                     <option value="all">All</option>
 
                 </select>
@@ -31,18 +31,62 @@
             <p class="text-center">No items</p>
         </div>
     </div>
+
+    </div>
+
+    <!-- 
+    Goal:
+    {"categories" : ["Fruit","Dairy","Confectionary","Vegetable"],
+    "items" :
+    [{"name":"Apple","category":"Fruit","quantity":10,"price":0.5},
+    {"name":"Banana","category":"Fruit","quantity":15,"price":0.3},
+    {"name":"Orange","category":"Fruit","quantity":12,"price":0.6},
+    {"name":"Milk","category":"Dairy","quantity":5,"price":1.2},
+    {"name":"Cheddar Cheese","category":"Dairy","quantity":4,"price":3.8},
+    {"name":"Yogurt","category":"Dairy","quantity":8,"price":0.9},
+    {"name":"Bread","category":"Confectionary","quantity":3,"price":2.5},
+    {"name":"Croissant","category":"Confectionary","quantity":7,"price":1.5},
+    {"name":"Bagel","category":"Confectionary","quantity":6,"price":1},
+    {"name":"Broccoli","category":"Vegetable","quantity":7,"price":1.3},
+    {"name":"Carrot","category":"Vegetable","quantity":9,"price":0.8},
+    {"name":"Spinach","category":"Vegetable","quantity":5,"price":1.5}]
+    }
+     -->
     
     <script>
         function getCategories() {
             // Fetch categories from the server using Axios
             // and display them in the select element
             // url: http://localhost:3010/categories
+            const cataVal = document.getElementById("selectCategory").value;
+            const url = "/categories";
 
+            axios.get(url, { 
+                params: {
+                    "category" : cataVal
+                }
+            })
+            .then(response =>  {
+                console.log(response.data);
+                showCategories(response.data);
+            })
+            .catch(error => {
+                console.log(error);
+            }); 
         }
 
         function showCategories(categories) {
             // Display the categories in the select element
-            
+            const selectElem = document.getElementById("selectCategory");
+
+            // remove previous selections
+
+            // create option elements
+            for (i=0; i<categories.length; i++) {
+                const optElem = document.createElement("option");
+                optElem.innerText = categories[i]
+                selectElem.appendChild(optElem);
+            }      
         }
 
         function getItems() {
@@ -51,15 +95,98 @@
             // If "All" is chosen, fetch all items
             // If a specific category is chosen, fetch items for that category
             // url: http://localhost:3010/items?category=categoryName
-            
+
+            const cataVal = document.getElementById("selectCategory").value;
+            const itemsList = document.getElementById("itemsList").value;
+            const url = "/items";
+
+            axios.get(url, { 
+                params: {
+                    "items" : itemsList,
+                    "category" : cataVal
+                }
+            })
+            .then(response =>  {
+                console.log(response.data);
+                showItems(response.data);
+            })
+            .catch(error => {
+                console.log(error);
+            }); 
         }
 
         function showItems(items) {
             // Display the items in the itemsList div
             // Each item should be displayed in a bootstrap card format
-            // The display should be responsive 3 columns on large screens, 2 columns on medium screens, and 1 column on small screens
-            
+            // The display should be responsive 3 columns on large screens, 
+            // 2 columns on medium screens, and 1 column on small screens
 
+            const itemsList = document.getElementById("itemsList");
+
+            // remove previous selections
+
+            // Goal: 
+            // <div class="container-fluid">
+                // <div class="row justify-content-center"> 
+                //     <div class="box col-4 text-center">
+                //         Box 1
+                //     </div>
+                //     <div class="col-sm-6 box"> 
+                //         <!-- OR col-md-6 box OR col-lg-4 box -->
+                //         Adjust Box Size
+                //     </div>
+                // </div>
+            // </div>
+
+            const divContainer = document.createElement("div");
+            divContainer.className = "container-fluid";
+
+            const divRow = document.createElement("div");
+            divRow.className = "row justify-content-center";
+            
+            // "items" : [{"name":"Apple","category":"Fruit","quantity":10,"price":0.5}, ...]
+            for (i=0; i<items.length; i++) {
+                const tableHeadings = Object.keys(items[i]);
+                const tableVal = Object.values(items[i]);
+                console.log(tableVal); // ['name', 'category', 'quantity', 'price']
+
+                // col wrapper
+                const col = document.createElement("div");
+                col.className = "col-12 col-md-6 col-lg-4 mb-4"; // 1 col (small), 2 (md), 3 (lg)
+
+                // bootstrap card
+                const card = document.createElement("div");
+                card.className = "card h-100 text-center shadow-sm";
+
+                const cardBody = document.createElement("div");
+                cardBody.className = "card-body";
+
+                // create boxes for every item
+                const divBox = document.createElement("div");
+                divBox.className = "col-sm-6 box";
+
+                for (j=0; j<tableVal.length; j++) {
+                    if (tableHeadings[j] == 'name') {
+                        const name = document.createElement("h5");
+                        name.className = "card-title";
+                        divBox.textContent = tableVal[j];
+                    }
+                    if (tableHeadings[j] == 'price') {
+                        const price = document.createElement("p");
+                        price.className = "card-text";
+                        divBox.innerText = tableVal[j];
+                        price.textContent = "Price: $" + tableVal[j];
+                    }
+                }
+                cardBody.appendChild(name);
+                cardBody.appendChild(price);
+                card.appendChild(cardBody);
+                col.appendChild(card);
+            }
+            divRow.appendChild(col);
+
+            divContainer.appendChild(divRow);
+            itemsList.appendChild(divContainer);
         }
 
     </script>
